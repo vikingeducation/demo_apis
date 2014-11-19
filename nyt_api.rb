@@ -1,3 +1,7 @@
+# An example of building a simple wrapper around the 
+# New York Times API's Most Popular endpoints
+# Run from CLI with `$ API_KEY=your_key_here ruby nyt_api.rb`
+
 require 'typhoeus'
 require 'cgi'
 require 'json'
@@ -12,9 +16,7 @@ class NYT
   # Set some constants that we know will be constant
   BASE_URI = "http://api.nytimes.com/svc/mostpopular/v2"
 
-  # Don't expose it, use ENV Vars
-  # But make sure they're URL compliant (properly encoded)
-  # API_KEY = CGI::escapeHTML(ENV["API_KEY"])    
+  # Don't expose it, use ENV Vars 
   API_KEY = ENV["API_KEY"]
 
   VALID_FORMATS = ["json"]   # skip XML for now
@@ -38,9 +40,9 @@ class NYT
     trim_response( response, num_articles )
   end
 
-  # Convenience wrapper for most visited stories  
-  def most_visited(sections = "all-sections", num_articles = 5)
-    response = send_request("mostvisited", sections)
+  # Convenience wrapper for most viewed stories  
+  def most_viewed(sections = "all-sections", num_articles = 5)
+    response = send_request("mostviewed", sections)
     trim_response( response, num_articles )
   end
 
@@ -100,12 +102,23 @@ class NYT
         }
       end
     end
-
+  #/private
 end
 
-# Run script for examples
+# ***** Run script for examples *****
+
+# Instantiate the API wrapper for the last 7 days of stories
 nyt_api = NYT.new(7, :json)
-puts nyt_api.most_emailed
+
+# Start checking out our results!
+# Most emailed authors:
+nyt_api.most_emailed.each { |article| puts article[:byline].tr("By ","") }
+
+# Most shared story titles:
+nyt_api.most_shared.each { |article| puts article[:title] }
+
+# Most viewed story
+puts nyt_api.most_viewed.inspect
 
 
 
