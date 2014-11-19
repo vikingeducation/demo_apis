@@ -3,12 +3,11 @@
 # Run from CLI with `$ API_KEY=your_key_here ruby nyt_api.rb`
 
 require 'typhoeus'
-require 'cgi'
 require 'json'
 
 # For better debugging
 require 'pry-byebug'
-require 'pp' # Lets us prettyprint using `pp(some_json_object)`
+require 'pp' # Lets us prettyprint with `pp(some_json_object)`
 
 
 class NYT
@@ -112,12 +111,12 @@ nyt_api = NYT.new(7, :json)
 
 # Start checking out our results!
 # Most emailed authors:
-nyt_api.most_emailed.each { |article| puts article[:byline].tr("By ","") }
+nyt_api.most_emailed.each { |article| puts article[:byline][3..-1] }
 
 # Most shared story titles:
 nyt_api.most_shared.each { |article| puts article[:title] }
 
-# Most viewed story
+# Most viewed story:
 puts nyt_api.most_viewed.inspect
 
 
